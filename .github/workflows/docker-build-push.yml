@@ -25,11 +25,13 @@ jobs:
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git remote add upstream https://github.com/RayBytes/ChatMock.git
-          git fetch upstream main
+          git remote add upstream https://github.com/RayBytes/ChatMock.git || \
+            git remote set-url upstream https://github.com/RayBytes/ChatMock.git
+          git fetch --no-tags upstream main
+          git fetch --no-tags origin "$BRANCH_NAME"
           git checkout "$BRANCH_NAME"
           git pull --rebase upstream main
-          git push origin "HEAD:$BRANCH_NAME"
+          git push --force-with-lease origin "HEAD:$BRANCH_NAME"
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
